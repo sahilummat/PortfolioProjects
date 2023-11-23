@@ -67,3 +67,12 @@ FROM server_utilization
 select sum(hours)/24 as total_uptime_days from (
 select *,cast (EXTRACT(EPOCH FROM (nexttime -status_time ))/3600 as int)as hours
 from cte where session_status='start' and nextstatus='stop')a
+
+
+Amazon Medium Question 
+
+select order_date,product_type,cum_purchased from (
+    select * 
+    ,sum(quantity)over(partition  by product_type order by order_date)as cum_purchased
+    from total_trans )a
+order by order_date
