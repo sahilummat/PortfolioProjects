@@ -76,3 +76,17 @@ select order_date,product_type,cum_purchased from (
     ,sum(quantity)over(partition  by product_type order by order_date)as cum_purchased
     from total_trans )a
 order by order_date
+
+Adobe Medium Question 
+
+with cte as (
+select * from adobe_transactions 
+where customer_id in 
+(
+select  customer_id from adobe_transactions  where product='Photoshop'
+)
+)
+select customer_id,
+SUM(case when product!='Photoshop' then revenue else 0 end )as revenue
+from cte 
+GROUP BY customer_id
