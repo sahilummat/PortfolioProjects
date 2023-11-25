@@ -90,3 +90,19 @@ select customer_id,
 SUM(case when product!='Photoshop' then revenue else 0 end )as revenue
 from cte 
 GROUP BY customer_id
+
+
+Tiger Analytics Medium Complexity Question 
+
+with cte as (
+select *
+,ROW_NUMBER()over(partition by cid order by fid) as rn 
+from  flights )
+select cid,max(case when rn=originf then origin else null end )as Origination 
+,max(case when rn=destinationf then Destination else null end )as Desination
+from (
+select *,min(rn)over() as originf,
+max(rn)over() as destinationf
+from cte)a
+group by cid
+
