@@ -106,3 +106,13 @@ max(rn)over() as destinationf
 from cte)a
 group by cid
 
+with cte as (
+select * ,
+min(order_date)over(partition by customer) as first_purchase
+from sales)
+select order_date,SUM(flag) as new_customers from (
+select *, case when order_date=first_purchase then 1 else 0 end as flag
+from cte )a
+group by order_date
+
+
