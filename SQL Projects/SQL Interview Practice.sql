@@ -1,3 +1,19 @@
+--Hard Interview Question Facebook 
+
+with cte as (
+select user_id
+,date_trunc('month',login_date) as current_val
+,date_trunc('month',lag(login_date)over(partition by user_id order by  login_date))as prev_val
+from user_logins )
+select EXTRACT(month from current_val) as mth,SUM(flag) as reactivated_users from (
+select * ,
+case when prev_val is null then 1 
+    when DATE_PART('month', AGE(current_val, prev_val))>1 then 1 else 0 end as flag
+from cte )a
+group by EXTRACT(month from current_val)
+having SUM(flag)>0
+order by mth
+
 --HARD SNOWFLAKE
 
 WITH consecutive_events_cte AS (
