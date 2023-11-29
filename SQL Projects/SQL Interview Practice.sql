@@ -1,3 +1,16 @@
+--Hard Interview Question Apple
+
+with cte as (
+select *  ,
+lead(product_name)over(partition by customer_id order by transaction_id) as next_val
+from transactions )
+,total as (
+select COUNT(distinct customer_id) as total_customer from transactions 
+)
+
+select round(count(distinct customer_id)*100.0/(select * from total) )as follow_up_percentage   from cte 
+where product_name='iPhone' and next_val='AirPods'
+
 --Hard Interview Question Facebook 
 
 with cte as (
