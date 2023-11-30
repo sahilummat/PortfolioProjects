@@ -1,3 +1,19 @@
+--Hard Interview Question Amazon
+
+with cte as (
+SELECT COALESCE(a.user_id,d.user_id)as user_id,a.status as status,
+case when d.paid is null then 'Not Paid' else 'Paid' end as payment
+FROM advertiser  a 
+full outer join daily_pay d on a.user_id=d.user_id
+)
+select user_id,
+case when payment='Not Paid' then 'CHURN' 
+    when payment='Paid'and status='CHURN' then 'RESURRECT'
+    when payment='Paid'and status is null then 'NEW'
+    else 'EXISTING' end as new_status
+from cte 
+order by user_id
+
 --Hard Interview Question Apple
 
 with cte as (
