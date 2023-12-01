@@ -161,3 +161,20 @@ from cte )a
 group by order_date
 
 
+--Medium Difficaulty Google question
+
+with cte as (
+select country,
+search_cat,num_search,invalid_result_pct
+from search_category 
+where invalid_result_pct is not null and invalid_result_pct is not null
+),cte2 as (
+select *,(num_search*invalid_result_pct)/100 as invalid_searches
+from cte )
+select country,SUM(num_search) as total_searches,
+ROUND(SUM(invalid_searches)*100.0/SUM(num_search),2)as invalid_searches_pct
+from cte2
+group by country
+order by country
+
+
