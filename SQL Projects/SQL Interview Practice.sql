@@ -122,6 +122,24 @@ select order_date,product_type,cum_purchased from (
     from total_trans )a
 order by order_date
 
+Paypal Medium Question
+with cte as (
+select p1.payer_id as payer1,p1.recipient_id as receiver1
+,p2.payer_id as payer2,p2.recipient_id as receiver2
+from payments p1
+inner join payments p2
+on p1.recipient_id=p2.payer_id)
+,cte2 as (
+select payer1,receiver1,
+case when payer1<receiver1 then payer1 else receiver1 end as flag1,
+case when payer1>receiver1 then payer1 else receiver1 end as flag2
+from cte where payer1=receiver2)
+select count(*) as unique_relationships from (
+select flag1,flag2
+from cte2 
+group by flag1,flag2)a
+
+    
 Adobe Medium Question 
 
 with cte as (
