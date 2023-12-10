@@ -195,4 +195,24 @@ from cte2
 group by country
 order by country
 
+--Hard Question ETSY
+
+with cte as (
+select s.user_id,s.signup_date ,u.purchase_date from signups s
+left join 
+(select * from (
+select *,
+row_number()over(partition by user_id order by purchase_date )as rn 
+from user_purchases )a where rn=1)
+u on s.user_id=u.user_id)
+,total_count as (
+select count(1) as total from cte 
+),cond_met as (
+select * from cte where purchase_date is not null
+and purchase_date < signup_date + INTERVAL '7 days'
+
+)
+select round(count(*)*100.0/(select total from total_count ),2)as single_purchase_pct
+from cond_met
+
 
