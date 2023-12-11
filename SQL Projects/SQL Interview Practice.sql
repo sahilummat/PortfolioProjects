@@ -195,6 +195,18 @@ from cte2
 group by country
 order by country
 
+--Hard Question Stripe 
+with cte as (
+SELECT *,
+lead(transaction_timestamp)over
+(partition by merchant_id,credit_card_id,amount order by transaction_id) as next_val
+FROM transactions)
+select count(*) as payment_count from (
+select *,round(extract(epoch from 
+        next_val::timestamp - transaction_timestamp::timestamp
+    ) / 60) as time_diff from cte )a where time_diff<=10
+
+    
 --Hard Question ETSY
 
 with cte as (
