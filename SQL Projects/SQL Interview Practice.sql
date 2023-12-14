@@ -113,7 +113,29 @@ select sum(hours)/24 as total_uptime_days from (
 select *,cast (EXTRACT(EPOCH FROM (nexttime -status_time ))/3600 as int)as hours
 from cte where session_status='start' and nextstatus='stop')a
 
+Salesforce Medium Question 
+    
+with cte as (
+select customer_id,SUM(num_seats) as total_seats,MAX(yearly_seat_cost) 
+as yearly_seat_cost
+from contracts 
+group by customer_id),final as (
+select customer_id	,total_seats*yearly_seat_cost as t_revenue,
+case when total_seats < 100 then 'SMB' 
+when total_seats>=100 and total_seats<=999 then 'Mid'
+when total_seats>=1000 then 'Enterprise' end as segment
+from cte )
+select 
+floor(max(case when segment='SMB' then revenue/cnt else 0 end ))as smb_avg_revenue,
+floor(max(case when segment='Mid' then revenue/cnt else 0 end ))as mid_avg_revenue,
+floor(max(case when segment='Enterprise' then (revenue)/(cnt) else 0 end)) as enterprise_avg_revenue
+from
+(
+select segment,sum(t_revenue) as revenue,count(*)as cnt from final 
 
+group by segment
+)a
+    
 Amazon Medium Question 
 
 select order_date,product_type,cum_purchased from (
