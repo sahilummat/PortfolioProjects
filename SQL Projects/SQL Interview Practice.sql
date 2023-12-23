@@ -135,6 +135,21 @@ select segment,sum(t_revenue) as revenue,count(*)as cnt from final
 
 group by segment
 )a
+
+
+Accenture Medium Question 
+
+;with data as (
+select * 
+,row_number() over(order by product_id) as rn 
+from products),
+final as (
+select *,
+lead(rn,1,99999)over(order by product_id)-1 as nextrn
+from data 
+where category is not null)
+select d.product_id,f.category,d.name
+from data d left join final f on d.rn between f.rn and f.nextrn
     
 Amazon Medium Question 
 
